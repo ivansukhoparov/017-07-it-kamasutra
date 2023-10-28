@@ -3,8 +3,10 @@ const http = require('http');
 let requestCounter = 0;
 
 const server = http.createServer((request, response) => {
+    if (request.url != '/favicon.ico') {
+        requestCounter++;
+    }
 
-    requestCounter++;
 
     switch (request.url) {
         case '/':
