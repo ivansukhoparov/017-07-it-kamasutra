@@ -31,7 +31,7 @@ app.get("/courses", (req:Request,res:Response)=>{
 
     if (req.query.title){
         foundedCourses=foundedCourses.filter((course=> course.title.indexOf(req.query.title as string)>-1));
-    };
+    }
 
     res.json(foundedCourses);
 })
