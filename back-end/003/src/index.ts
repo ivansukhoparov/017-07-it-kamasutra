@@ -5,6 +5,14 @@ const port :5000 = 5000;
 const jsonBodyMiddleware = express.json();
 app.use(jsonBodyMiddleware);
 
+const HTTP_STATUSES={
+   OK_200:200,
+   CREATED_201:201,
+   NO_CONTENT_204:204,
+
+    BAD_REQUEST_400:400,
+   NOT_FOUND_404:404
+}
 
 const db ={
     courses: [
@@ -33,7 +41,7 @@ app.get("/courses/:id", (req:Request,res:Response)=>{
    const foundedCourse = db.courses.find(course => course.id === id);
 
     if (!foundedCourse){
-        res.sendStatus(404);
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
         return
     }
     res.json(foundedCourse);
@@ -44,7 +52,7 @@ app.post("/courses", (req:Request,res:Response)=>{
     const title = req.body.title;
 
     if (!title){
-        res.sendStatus(400);
+        res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
         return
     }
     const newCourse = {
@@ -52,7 +60,7 @@ app.post("/courses", (req:Request,res:Response)=>{
         title:title
     };
     db.courses.push(newCourse);
-    res.status(201).json(newCourse);
+    res.status(HTTP_STATUSES.CREATED_201).json(newCourse);
 })
 
 app.delete("/courses/:id", (req:Request,res:Response)=>{
@@ -60,19 +68,19 @@ app.delete("/courses/:id", (req:Request,res:Response)=>{
     const courseIndex = db.courses.findIndex(course => course.id === id);
     console.log(courseIndex)
     if (courseIndex<=-1){
-        res.sendStatus(404);
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
         return
     }
 
     db.courses.splice(courseIndex,1)
 
-    res.sendStatus(204);
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 })
 
 app.put("/courses/:id", (req:Request,res:Response)=>{
     const title = req.body.title;
     if (!title){
-        res.status(400).json({message:"title is required"})
+        res.status(HTTP_STATUSES.BAD_REQUEST_400).json({message:"title is required"})
         return;
     }
 
@@ -80,11 +88,11 @@ app.put("/courses/:id", (req:Request,res:Response)=>{
     const foundedCourse = db.courses.find(course => course.id === id);
 
     if (!foundedCourse){
-        res.sendStatus(404);
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     foundedCourse.title=title;
-    res.sendStatus(204);
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 })
 
 app.listen(port, ()=>{
