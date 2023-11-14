@@ -9,7 +9,10 @@ app.use(jsonBodyMiddleware);
 const db ={
     courses: [
         {id:1, title:"frontend"},
-        {id:2, title:"backend"}
+        {id:2, title:"backend"},
+        {id:3, title:"prev"},
+        {id:4, title:"ghost"},
+        {id:5, title:"post"},
     ]
 } ;
 
@@ -63,6 +66,24 @@ app.delete("/courses/:id", (req:Request,res:Response)=>{
 
     db.courses.splice(courseIndex,1)
 
+    res.sendStatus(204);
+})
+
+app.put("/courses/:id", (req:Request,res:Response)=>{
+    const title = req.body.title;
+    if (!title){
+        res.status(400).json({message:"title is required"})
+        return;
+    }
+
+    const  id = +req.params.id;
+    const foundedCourse = db.courses.find(course => course.id === id);
+
+    if (!foundedCourse){
+        res.sendStatus(404);
+        return;
+    }
+    foundedCourse.title=title;
     res.sendStatus(204);
 })
 
